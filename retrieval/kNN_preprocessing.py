@@ -13,7 +13,7 @@ from transformers import AutoTokenizer, AutoModel
 from transformers import BartTokenizer, BartModel
 import torch
 import os
-from utils import chunks
+#from utils import chunks
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import pairwise
 import pickle
@@ -75,12 +75,12 @@ metric = args.metric # "cosine" # "euclidean"
 
 #########################################################################################################################################
 
-sync_from_GDrive = "rclone sync -P remote:PhD_Research/GPT-3/{} dataset/".format(train_fname)
+""" sync_from_GDrive = "rclone sync -P remote:PhD_Research/GPT-3/{} dataset/".format(train_fname)
 print(sync_from_GDrive)
 os.system(sync_from_GDrive)
 sync_from_GDrive = "rclone sync -P remote:PhD_Research/GPT-3/{} dataset/".format(dev_fname)
 print(sync_from_GDrive)
-os.system(sync_from_GDrive)
+os.system(sync_from_GDrive) """
 
 # re separator: (?<![\\t].)\\t
 train_df = pd.read_csv(train_fname, sep='(?<![\\t].)\\t', quotechar='"', engine='python', header='infer', keep_default_na=False)
@@ -88,15 +88,22 @@ train_corpus = train_df.loc[:, Q].to_list()
 train_labels = train_df.loc[:, A].to_list()
 
 train_indices = list(range(len(train_corpus)))
+print(len(train_corpus))
 # train_indices = list(range(2000))
 
 train_corpus = [train_corpus[train_index] for train_index in train_indices]
 train_labels = [train_labels[train_index] for train_index in train_indices]
+print("Train Labels: \n")
+#print(train_labels)
+
 for k in range(len(train_labels)):
+    #print(train_labels[k],"\n")
     if train_labels[k] == 0:
+        #print(k,"\n")
         train_labels[k] = 2
     else:
         train_labels[k] = 3
+#sys.exit()
 
 # (?<!")\\t|(?<=")\\t(?=")
 dev_df = pd.read_csv(dev_fname, sep='(?<![\\t].)\\t|\\t(?!\\")', quotechar='"', engine='python', header='infer', keep_default_na=False)
@@ -146,6 +153,12 @@ def decode(tok, model, corpus):
 #########################################################################################################################################
 
 labels = np.asarray(dev_labels + train_labels)
+print(len(labels))
+for label in labels:
+    print(label)
+
+#sys.exit()
+
 unique_labels = list(set(labels))
 dev_indices = [[] for _ in unique_labels]
 for i, label in enumerate(labels):

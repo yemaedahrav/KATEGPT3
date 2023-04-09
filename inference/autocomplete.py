@@ -39,7 +39,7 @@ class glueComplete:
         return
     def __call__(self, example="", max_tokens=5):
         prompt = example
-        response = openai.Completion.create(engine="davinci-msft", prompt=prompt, stop='\n', max_tokens=max_tokens, temperature=0.0, logprobs=1, n=1)
+        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, stop='\n', max_tokens=max_tokens, temperature=0.0, logprobs=1, n=1)
         resp = []
         for c in response.choices:
             text = c.text
